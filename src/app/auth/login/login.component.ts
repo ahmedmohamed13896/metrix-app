@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
@@ -13,7 +13,6 @@ import { noop } from 'rxjs';
 import { Router } from '@angular/router';
 import { AppState } from '../../reducers';
 import { login } from '../auth.actions';
-import { AuthActions } from '../action-types';
 
 @Component({
   selector: 'login',
@@ -42,10 +41,7 @@ export class LoginComponent implements OnInit {
       .login(val.email, val.password)
       .pipe(
         tap((user) => {
-          console.log(user);
-
           this.store.dispatch(login({ user }));
-
           this.router.navigateByUrl('/user-profile');
         })
       )
