@@ -1,11 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { noop } from 'rxjs';
-import { tap } from 'rxjs/operators';
-import { AppState } from 'src/app/reducers';
-import { getSubordinates } from '../../user.actions';
-import { UserService } from '../../services/user.service';
+import { Component, OnInit } from '@angular/core';
+import { select, Store } from '@ngrx/store';
 import { Subordinate } from '../../models/subordinate.model';
+import { SubordinatesState } from '../../reducers';
+import { map, tap } from 'rxjs/operators';
+import { UserService } from './../../services/user.service';
+import { UserActions } from '../../action-types';
+import { Observable } from 'rxjs';
+import { Subordinates } from '../../user.selectors';
 
 @Component({
   selector: 'app-subordinates',
@@ -13,24 +14,15 @@ import { Subordinate } from '../../models/subordinate.model';
   styleUrls: ['./subordinates.component.css']
 })
 export class SubordinatesComponent implements OnInit{
-  subordinates: Subordinate[] = [];
+  subordinates$: Observable<Subordinate[]> = this.store.pipe(select(Subordinates));
 
-  constructor(
-    private store: Store<AppState>,
-    private userService:UserService){
-  }
+  constructor(private store: Store<SubordinatesState>){}
+
   ngOnInit(): void {
-    this.getSubordinates();
+    this.loadSubordinates();
   }
-  getSubordinates() {
-    this.userService.getSubOrdinaties().pipe(
-      tap((res) => {
-        this.store.dispatch(getSubordinates(res.data));
-        this.subordinates = res.data;
-      })
-    ).subscribe(noop, () => {
-      console.log('subordinates Loaded');
-    });
 
+  loadSubordinates() {
+    this.store.dispatch(UserActions.LoadSubordinates())
   }
 }

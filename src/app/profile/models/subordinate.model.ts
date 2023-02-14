@@ -1,7 +1,7 @@
 
 
 export interface Subordinate {
-  ID: null;
+  ID: number;
   name: string;
   responsibleImage: string;
   responsibleName: string;
